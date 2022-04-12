@@ -36,10 +36,12 @@
 
       urls = [...urls, processedText];
       let tr = document.createElement('tr');
+      let td = document.createElement('td');
       let a = document.createElement('a');
       a.href=processedText;
       a.append(processedText);
-      tr.append(a);
+      td.append(a);
+      tr.append(td);
       $('#url-talbe').prepend(tr);
       document.getElementById('url').value = ''
       localStorage.setItem('urls', JSON.stringify(urls));

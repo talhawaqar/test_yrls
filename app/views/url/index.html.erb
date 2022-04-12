@@ -27,7 +27,14 @@
       let processedText = inputText.replace(/^https:\/\/+/i, '');
       processedText = processedText.replace(/^http:\/\/+/i, '');
       processedText = processedText.split('/')[0];
-      urls = [...JSON.parse(localStorage.getItem('urls')), processedText];
+      if (localStorage.getItem('urls') == null ) {
+        urls = [];
+      }
+      else {
+        urls = JSON.parse(localStorage.getItem('urls'));
+      }
+
+      urls = [...urls, processedText];
       let tr = document.createElement('tr');
       let a = document.createElement('a');
       a.href=processedText;

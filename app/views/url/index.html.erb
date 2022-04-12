@@ -1,0 +1,70 @@
+<div class="container">
+  <%= form_with id: 'url-form'  do |form| %>
+    <%= form.label :url, "Website Url:" %>
+    <%= form.text_field :url %>
+  <% end %>
+  <div class="table-container">
+    <table id="url-talbe">
+      <% @urls.each do |url| %>
+        <tr>
+          <td>
+            <a href="http://<%= url.link %>" target="_blank"><%= url.link%> </a>
+          </td>
+        </tr>
+      <% end %>
+    <table>
+  </div>
+</div>
+<script>
+  let form = document.getElementById('url-form');
+  form.addEventListener('submit', submitForm);
+  let urls = []
+
+  function submitForm(e) {
+    e.preventDefault();
+    let inputText = document.getElementById('url').value;
+    if(isValidURL(inputText)) {
+      let processedText = inputText.replace(/^https:\/\/+/i, '');
+      processedText = processedText.replace(/^http:\/\/+/i, '');
+      processedText = processedText.split('/')[0];
+      urls = [...JSON.parse(localStorage.getItem('urls')), processedText];
+      let tr = document.createElement('tr');
+      let a = document.createElement('a');
+      a.href=processedText;
+      a.append(processedText);
+      tr.append(a);
+      $('#url-talbe').prepend(tr);
+      localStorage.setItem('urls', JSON.stringify(urls));
+    }
+  }
+
+  function sendData() {
+    urls = [...JSON.parse(localStorage.getItem('urls'))]; 
+    if(urls.length != 0) {
+      $.ajax({
+        type: "POST",
+        url: "/url",
+        data: {"urls": urls },
+        dataType: "json",
+        success: function(data){
+          urls = [];
+          localStorage.setItem('urls', JSON.stringify(urls));
+        },
+        error: function(e) {
+          console.log(e);
+        }
+      });
+    }
+  }
+
+  setInterval(sendData, 15000);
+
+  function isValidURL(string) {
+    var res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+    return (res !== null)
+  };
+
+
+
+</script>
+

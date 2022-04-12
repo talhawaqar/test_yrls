@@ -41,6 +41,7 @@
       a.append(processedText);
       tr.append(a);
       $('#url-talbe').prepend(tr);
+      document.getElementById('url').value = ''
       localStorage.setItem('urls', JSON.stringify(urls));
     }
   }
